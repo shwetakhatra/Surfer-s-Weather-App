@@ -4,9 +4,26 @@ import Footer from "./components/Footer";
 import Dashboard from "./components/Dashboard";
 import { getWeatherStyles } from "./utils/getWeatherStyles";
 
+interface City {
+  id: number;
+  city: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
+
+interface Weather {
+  temperature: number;
+  windspeed: number;
+  weathercode: number;
+  // add more if needed
+}
+
 function App() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [weather, setWeather] = useState("clear");
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
 
   const getWeatherCondition = (code: number): string => {
     if ([0].includes(code)) return "clear";
@@ -18,36 +35,42 @@ function App() {
     return "clear";
   };
 
+  const fetchWeatherByCoords = async (latitude: number, longitude: number) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setCurrentWeather(data.current_weather);
+      const code = data.current_weather.weathercode;
+      const condition = getWeatherCondition(code);
+      setWeather(condition);
+    } catch (err) {
+      console.error("Error fetching weather:", err);
+    }
+  };
+
   useEffect(() => {
     document.body.className = theme === "dark" ? "theme-dark" : "theme-light";
   }, [theme]);
 
   useEffect(() => {
-    const fetchWeather = async () => {
+    if (selectedCity) {
+      fetchWeatherByCoords(selectedCity.latitude, selectedCity.longitude);
+    } else {
       if (!navigator.geolocation) {
         console.warn("Geolocation not supported.");
         return;
       }
-
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
-
-        try {
-          const response = await fetch(url);
-          const data = await response.json();
-          const code = data.current_weather.weathercode;
-          const condition = getWeatherCondition(code);
-          setWeather(condition);
-        } catch (err) {
-          console.error("Error fetching weather:", err);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
+        },
+        (err) => {
+          console.error("Geolocation error:", err);
         }
-      });
-    };
-
-    fetchWeather();
-  }, []);
+      );
+    }
+  }, [selectedCity]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
@@ -59,7 +82,7 @@ function App() {
     <div className={`flex flex-col min-h-screen ${bg} ${text}`}>
       <Header theme={theme} toggleTheme={toggleTheme} />
       <main className="flex-grow p-4">
-        <Dashboard theme={theme} />
+        <Dashboard theme={theme} onSelectCity={setSelectedCity} />
       </main>
       <Footer theme={theme} />
     </div>

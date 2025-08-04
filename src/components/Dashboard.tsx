@@ -4,17 +4,27 @@ import CurrentWeather from "./CurrentWeather";
 import Forecast from "./Forecast";
 import PopularCities from "./PopularCities";
 import WeatherSummary from "./WeatherSummary";
+import MapView from "./MapView";
+
+interface City {
+  id: number;
+  city: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
 
 interface DashboardProps {
   theme: "light" | "dark";
+ onSelectCity: (city: City) => void;
 }
 
-const Dashboard: FC<DashboardProps> = ({ theme }) => {
+const Dashboard: FC<DashboardProps> = ({ theme, onSelectCity }) => {
   const isDark = theme === "dark";
   return (
     <section className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 p-4">
       <div className="col-span-1 space-y-4">
-        <SearchBar theme={theme} />
+        <SearchBar theme={theme} onSelectCity={onSelectCity} />
         <CurrentWeather theme={theme} />
         <Forecast theme={theme} />
       </div>
@@ -22,9 +32,9 @@ const Dashboard: FC<DashboardProps> = ({ theme }) => {
         <div
           className={`p-4 rounded-lg ${
             isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-800"
-          } h-80 flex items-center justify-center`}
+          } h-80`}
         >
-          [ Map Goes Here ]
+          <MapView />
         </div>
         <WeatherSummary theme={theme} />
       </div>

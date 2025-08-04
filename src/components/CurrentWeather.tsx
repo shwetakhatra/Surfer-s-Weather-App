@@ -10,7 +10,9 @@ const CurrentWeather: FC<CurrentWeatherProps> = ({ theme }) => {
   return (
     <div
       className={`p-4 rounded-lg flex flex-col gap-2 ${
-        isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-900"
+        isDark
+          ? "bg-white/10 text-white"
+          : "bg-gray-100 text-gray-900"
       }`}
     >
       <p className="text-sm">Current Weather</p>

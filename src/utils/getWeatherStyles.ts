@@ -4,7 +4,6 @@ export const getWeatherStyles = (
 ): { bg: string; text: string } => {
   switch (weather.toLowerCase()) {
     case "clear":
-      // Blue sky gradient with bright sun in top-left
       return {
         bg: "bg-gradient-to-br from-yellow-100 via-blue-300 to-blue-500",
         text: "text-gray-900",
