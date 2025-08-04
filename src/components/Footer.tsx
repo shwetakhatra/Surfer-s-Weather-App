@@ -16,8 +16,15 @@ const Footer: FC<FooterProps> = ({ theme }) => {
         }`}
     >
       <p className="flex items-center gap-1">
-        Made with <HeartIcon className="w-5 h-5 text-red-500" /> by Shweta
-        Khatra
+        Made with <HeartIcon className="w-5 h-5 text-red-500" /> by{" "}
+        <a
+          href="https://github.com/shwetakhatra"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-blue-500 transition-colors"
+        >
+          Shweta Khatra
+        </a>
       </p>
     </footer>
   );
