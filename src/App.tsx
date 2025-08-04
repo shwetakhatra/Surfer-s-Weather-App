@@ -14,16 +14,15 @@ function App() {
   };
 
   return (
-    <>
+    <div
+      className={`flex flex-col min-h-screen ${theme === "dark" ? "bg-[#242424] text-white" : "bg-white text-gray-800"}`}
+    >
       <Header theme={theme} toggleTheme={toggleTheme} />
-      <main
-        className={`min-h-screen w-full p-4 transition-colors
-        ${theme === "dark" ? "bg-[#242424] text-white" : "bg-white text-gray-800"}`}
-      >
+      <main className="flex-grow p-4">
         <p>Current theme: {theme}</p>
       </main>
-      <Footer />
-    </>
+      <Footer theme={theme} />
+    </div>
   );
 }
 
