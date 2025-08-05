@@ -25,7 +25,7 @@ const Header: FC<HeaderProps> = ({ theme, toggleTheme }) => {
         </div>
         <button
           onClick={toggleTheme}
-          className={`p-2 rounded-md transition hover:ring-2 hover:ring-blue-300 ${
+          className={`hidden p-2 rounded-md transition hover:ring-2 hover:ring-blue-300 ${
             theme === "dark"
               ? "bg-gray-800 text-white"
               : "bg-gray-100 text-gray-800"

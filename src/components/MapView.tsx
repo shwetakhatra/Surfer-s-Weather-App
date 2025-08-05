@@ -3,7 +3,13 @@ import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 
 const RADIUS_METERS = 5000;
 
-const ChangeView = ({ center, zoom }: { center: [number, number]; zoom: number }) => {
+const ChangeView = ({
+  center,
+  zoom,
+}: {
+  center: [number, number];
+  zoom: number;
+}) => {
   const map = useMap();
   map.setView(center, zoom);
   return null;
@@ -24,7 +30,7 @@ const MapView = () => {
       },
       (err) => {
         console.error("Error getting location:", err);
-      }
+      },
     );
   }, []);
 
@@ -43,7 +49,11 @@ const MapView = () => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Marker position={position} />
-      <Circle center={position} radius={RADIUS_METERS} pathOptions={{ fillColor: "blue", fillOpacity: 0.2, color: "blue" }} />
+      <Circle
+        center={position}
+        radius={RADIUS_METERS}
+        pathOptions={{ fillColor: "blue", fillOpacity: 0.2, color: "blue" }}
+      />
     </MapContainer>
   );
 };

@@ -15,8 +15,8 @@ const Footer: FC<FooterProps> = ({ theme }) => {
             : "bg-gray-100 text-gray-800"
         }`}
     >
-      <p className="flex items-center gap-1">
-        Made with <HeartIcon className="w-5 h-5 text-red-500" /> by{" "}
+      <p className="flex items-center gap-1 text-xs">
+        Made with <HeartIcon className="w-3 h-3 text-red-500" /> by{" "}
         <a
           href="https://github.com/shwetakhatra"
           target="_blank"

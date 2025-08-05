@@ -34,12 +34,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ theme, onSelectCity }) => {
 
     debounceTimeout.current = setTimeout(() => {
       setLoading(true);
-      fetch(`${GEO_DB_API_URL}?namePrefix=${encodeURIComponent(query)}&limit=10`, {
-        headers: {
-          "X-RapidAPI-Key": "c3c2c9b66fmsh725c13235ec2587p1fbb55jsnc8f9496755d6",
-          "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
+      fetch(
+        `${GEO_DB_API_URL}?namePrefix=${encodeURIComponent(query)}&limit=10`,
+        {
+          headers: {
+            "X-RapidAPI-Key":
+              "c3c2c9b66fmsh725c13235ec2587p1fbb55jsnc8f9496755d6",
+            "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
+          },
         },
-      })
+      )
         .then((res) => res.json())
         .then((data) => {
           setCities(
@@ -49,7 +53,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ theme, onSelectCity }) => {
               country: c.country,
               latitude: c.latitude,
               longitude: c.longitude,
-            }))
+            })),
           );
           setLoading(false);
         })
@@ -71,7 +75,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ theme, onSelectCity }) => {
   };
 
   return (
-    <div className={`relative rounded-md shadow p-4 ${isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-800"}`}>
+    <div className={`relative rounded-md shadow p-4`}>
       <input
         type="text"
         placeholder="Search for city"
@@ -89,7 +93,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ theme, onSelectCity }) => {
       {showList && (
         <ul
           className={`absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md border ${
-            isDark ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"
+            isDark
+              ? "bg-gray-800 border-gray-700 text-white"
+              : "bg-white border-gray-300 text-gray-900"
           }`}
         >
           {loading ? (
