@@ -127,7 +127,7 @@ const Dashboard = ({ theme, setWeather }: DashboardProps) => {
           <div
             className={`p-4 rounded-lg ${
               isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-800"
-            } md:col-span-2`}
+            } md:col-span-2 hidden md:block`}
           >
             <MapView city={selectedCity} />
           </div>
