@@ -9,9 +9,14 @@ import type { Weather } from "../api/weather";
 interface CurrentWeatherProps {
   theme: string;
   weather: Weather | null;
+  cityName?: string;
 }
 
-const CurrentWeather: FC<CurrentWeatherProps> = ({ theme, weather }) => {
+const CurrentWeather: FC<CurrentWeatherProps> = ({
+  theme,
+  weather,
+  cityName,
+}) => {
   const isDark = theme === "dark";
   return (
     <div
@@ -20,7 +25,9 @@ const CurrentWeather: FC<CurrentWeatherProps> = ({ theme, weather }) => {
       }`}
     >
       <div className="flex justify-between items-center mb-2">
-        <p className="text-sm font-bold tracking-wide">Current Weather</p>
+        <p className="text-sm font-bold tracking-wide">
+          {cityName ? `Current Weather in ${cityName}` : "Current Weather"}
+        </p>
         <CloudIcon className="w-8 h-8 text-blue-400 drop-shadow" />
       </div>
 

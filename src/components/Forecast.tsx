@@ -1,5 +1,12 @@
 import type { FC, ReactNode } from "react";
 
+interface RawDaily {
+  time: string[];
+  temperature_2m_max: number[];
+  temperature_2m_min: number[];
+  weathercode?: number[];
+}
+
 interface ForecastDay {
   date: string;
   day: string;
@@ -9,20 +16,56 @@ interface ForecastDay {
 
 interface ForecastProps {
   theme: string;
-  days?: ForecastDay[];
+  days?: RawDaily;
 }
 
-const defaultDays: ForecastDay[] = [
-  { date: "25 Jul", day: "Thu", temp: "24° / 22°", icon: "🌧️" },
-  { date: "26 Jul", day: "Fri", temp: "24° / 22°", icon: "⛅" },
-  { date: "27 Jul", day: "Sat", temp: "24° / 22°", icon: "🌦️" },
-  { date: "28 Jul", day: "Sun", temp: "24° / 22°", icon: "🌧️" },
-  { date: "29 Jul", day: "Mon", temp: "24° / 22°", icon: "☀️" },
-  { date: "30 Jul", day: "Tue", temp: "24° / 22°", icon: "⛅" },
-  { date: "31 Jul", day: "Sun", temp: "24° / 22°", icon: "🌧️" },
-];
+const getWeatherIcon = (code: number) => {
+  if (code >= 200 && code < 300) return "⛈️";
+  if (code >= 300 && code < 600) return "🌧️";
+  if (code >= 600 && code < 700) return "❄️";
+  if (code === 800) return "☀️";
+  if (code === 801) return "🌤️";
+  if (code > 801) return "☁️";
+  return "🌈";
+};
 
-const Forecast: FC<ForecastProps> = ({ theme, days = defaultDays }) => {
+const Forecast: FC<ForecastProps> = ({ theme, days }) => {
+  if (!days || !days.time.length) {
+    return (
+      <div
+        className={`p-4 rounded-lg ${
+          theme === "dark"
+            ? "bg-white/10 text-white"
+            : "bg-gray-100 text-gray-800"
+        }`}
+      >
+        <p className="text-center text-sm opacity-60">
+          No forecast data available.
+        </p>
+      </div>
+    );
+  }
+
+  const forecastDays: ForecastDay[] = days.time.map((dateStr, i) => {
+    const dateObj = new Date(dateStr);
+    const day = dateObj.toLocaleDateString("en-GB", { weekday: "short" });
+    const date = dateObj.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+    });
+
+    const maxTemp = days.temperature_2m_max[i];
+    const minTemp = days.temperature_2m_min[i];
+    const weatherCode = days.weathercode ? days.weathercode[i] : 800;
+
+    return {
+      date,
+      day,
+      temp: `${maxTemp.toFixed(0)}° / ${minTemp.toFixed(0)}°`,
+      icon: getWeatherIcon(weatherCode),
+    };
+  });
+
   return (
     <div
       className={`p-4 rounded-lg ${
@@ -37,7 +80,7 @@ const Forecast: FC<ForecastProps> = ({ theme, days = defaultDays }) => {
       <div className="w-full flex-1 ">
         <table className="w-full table-fixed text-sm">
           <tbody>
-            {days.map((f, i) => (
+            {forecastDays.map((f, i) => (
               <tr
                 key={i}
                 className={`group transition-colors border-b last:border-b-0

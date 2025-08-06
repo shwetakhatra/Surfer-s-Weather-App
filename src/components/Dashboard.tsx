@@ -17,6 +17,13 @@ interface City {
   longitude: number;
 }
 
+export interface RawDaily {
+  time: string[];
+  temperature_2m_max: number[];
+  temperature_2m_min: number[];
+  weathercode?: number[];
+}
+
 interface DashboardProps {
   theme: "light" | "dark";
   setWeather: (condition: string) => void;
@@ -85,12 +92,34 @@ const Dashboard = ({ theme, setWeather }: DashboardProps) => {
     );
   }, [selectedCity, fetchAndSetWeather]);
 
+  const mapToRawDaily = (daily: any): RawDaily | undefined => {
+    if (!daily) return undefined;
+    if (
+      !Array.isArray(daily.time) ||
+      !Array.isArray(daily.temperature_2m_max) ||
+      !Array.isArray(daily.temperature_2m_min)
+    ) {
+      return undefined;
+    }
+
+    return {
+      time: daily.time,
+      temperature_2m_max: daily.temperature_2m_max,
+      temperature_2m_min: daily.temperature_2m_min,
+      weathercode: daily.weathercode,
+    };
+  };
+
   return (
     <section className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 h-auto">
       <div className="space-y-4 md:flex md:flex-col md:justify-normal md:col-span-1">
         <SearchBar theme={theme} onSelectCity={handleCitySelect} />
-        <CurrentWeather theme={theme} weather={currentWeather} />
-        <Forecast theme={theme} />
+        <CurrentWeather
+          theme={theme}
+          weather={currentWeather}
+          cityName={selectedCity?.city}
+        />
+        <Forecast theme={theme} days={mapToRawDaily(currentWeather?.daily)} />
       </div>
 
       <div className="space-y-4 md:space-y-0 md:col-span-3 grid-cols-1 md:grid md:grid-rows-[auto_auto] gap-4">
@@ -100,7 +129,7 @@ const Dashboard = ({ theme, setWeather }: DashboardProps) => {
               isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-800"
             } md:col-span-2`}
           >
-            <MapView />
+            <MapView city={selectedCity} />
           </div>
           <div
             className={`p-4 rounded-lg ${
