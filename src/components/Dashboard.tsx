@@ -28,34 +28,39 @@ const Dashboard = ({ theme, setWeather }: DashboardProps) => {
   const [loading, setLoading] = useState(false);
   const isDark = theme === "dark";
 
-  const fetchAndSetWeather = useCallback(async (latitude: number, longitude: number) => {
-    setLoading(true);
-    try {
-      const weatherData = await fetchWeatherByCoords({
-        latitude,
-        longitude,
-        current: ["temperature_2m", "weather_code", "wind_speed_10m"],
-        hourly: ["temperature_2m"],
-        daily: ["temperature_2m_max", "temperature_2m_min"],
-      });
-      if (weatherData?.current) {
-        setCurrentWeather({
-          current: weatherData.current,
-          daily: weatherData.daily,
-          hourly: weatherData.hourly,
-          current_weather_units: weatherData.current_weather_units,
-          elevation: weatherData.elevation,
+  const fetchAndSetWeather = useCallback(
+    async (latitude: number, longitude: number) => {
+      setLoading(true);
+      try {
+        const weatherData = await fetchWeatherByCoords({
+          latitude,
+          longitude,
+          current: ["temperature_2m", "weather_code", "wind_speed_10m"],
+          hourly: ["temperature_2m"],
+          daily: ["temperature_2m_max", "temperature_2m_min"],
         });
+        if (weatherData?.current) {
+          setCurrentWeather({
+            current: weatherData.current,
+            daily: weatherData.daily,
+            hourly: weatherData.hourly,
+            current_weather_units: weatherData.current_weather_units,
+            elevation: weatherData.elevation,
+          });
 
-        const condition = getWeatherCondition(weatherData.current.weathercode as number);
-        setWeather(condition);
+          const condition = getWeatherCondition(
+            weatherData.current.weathercode as number,
+          );
+          setWeather(condition);
+        }
+      } catch (error) {
+        console.error("Failed to fetch weather data:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to fetch weather data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [setWeather]);
+    },
+    [setWeather],
+  );
 
   const handleCitySelect = (city: City) => {
     setSelectedCity(city);
@@ -76,7 +81,7 @@ const Dashboard = ({ theme, setWeather }: DashboardProps) => {
       },
       (error) => {
         console.warn("Error getting geolocation:", error);
-      }
+      },
     );
   }, [selectedCity, fetchAndSetWeather]);
 
@@ -110,7 +115,7 @@ const Dashboard = ({ theme, setWeather }: DashboardProps) => {
             isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-800"
           }`}
         >
-          <WeatherSummary theme={theme} />
+          <WeatherSummary theme={theme} hourly={currentWeather?.hourly} />
         </div>
       </div>
     </section>

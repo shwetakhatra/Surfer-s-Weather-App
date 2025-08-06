@@ -1,49 +1,74 @@
 import type { FC } from "react";
 import { CloudIcon } from "@heroicons/react/24/solid";
+import type { Weather } from "../api/weather";
 
 interface WeatherSummaryProps {
   theme: string;
+  hourly?: Weather["hourly"];
 }
 
-const summary = [
-  { time: "Now", label: "Rain", value: 76, icon: CloudIcon },
-  { time: "7 PM", label: "Rain", value: 78, icon: CloudIcon },
-  { time: "11 PM", label: "Rain", value: 79, icon: CloudIcon },
-  { time: "12 AM", label: "Rain", value: 79, icon: CloudIcon },
-  { time: "1 AM", label: "Rain", value: 79, icon: CloudIcon },
-];
-
-const WeatherSummary: FC<WeatherSummaryProps> = ({ theme }) => {
+const WeatherSummary: FC<WeatherSummaryProps> = ({ theme, hourly }) => {
   const isDark = theme === "dark";
+
+  if (
+    !hourly ||
+    !Array.isArray(hourly.time) ||
+    !Array.isArray(hourly.temperature_2m)
+  ) {
+    return (
+      <p className="text-sm italic opacity-70">
+        No hourly weather data available.
+      </p>
+    );
+  }
+
+  const now = Date.now();
+  const startIndex = hourly.time.findIndex((timeStr) => {
+    const timeMs = new Date(timeStr).getTime();
+    return timeMs >= now;
+  });
+
+  const sliceStart = startIndex === -1 ? 0 : startIndex;
+
+  const summary = hourly.time
+    .slice(sliceStart, sliceStart + 10)
+    .map((time, index) => {
+      const rawTemp = hourly.temperature_2m[sliceStart + index];
+      const temp =
+        typeof rawTemp === "string" ? parseFloat(rawTemp) : (rawTemp ?? 0);
+      const timeFormatted = new Date(time).toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      return {
+        time: timeFormatted,
+        temp: `${temp.toFixed(0)}°C`,
+        icon: CloudIcon,
+      };
+    });
+
   return (
-    <div className={`rounded-lg h-full flex flex-col `}>
+    <div className={`rounded-lg h-full flex flex-col`}>
       <div className="flex justify-between items-center mb-2">
-        <p className="text-sm font-bold">Summary</p>
+        <p className="text-sm font-bold">Today's Forcast</p>
       </div>
-      <div className="flex flex-col gap-3">
-        {summary.map((item) => (
+
+      <div
+        className={`flex gap-3 overflow-x-auto mt-8
+    scrollbar-hide
+  `}
+      >
+        {summary.map((item, index) => (
           <div
-            key={item.time}
-            className={`flex items-center rounded-md px-3 py-2 gap-3 transition
-              ${isDark ? "bg-white/5 hover:bg-white/15" : "bg-white hover:bg-gray-200"}
-            `}
+            key={index}
+            className={`min-w-[80px] flex flex-col items-center px-3 py-2 rounded-md shadow-sm transition text-center
+        ${isDark ? "bg-white/5 text-white" : "bg-white text-black"}
+      `}
           >
-            <item.icon className="h-6 w-6 text-blue-400 shrink-0" />
-            <span className="text-xs w-14">{item.time}</span>
-            <div className="flex-1">
-              <div className="w-full bg-gray-300/30 rounded-full h-2 flex items-center">
-                <div
-                  style={{
-                    width: `${item.value}%`,
-                    background: isDark
-                      ? "linear-gradient(90deg, #4fd1c5, #63b3ed)"
-                      : "linear-gradient(90deg, #3182ce, #90cdf4)",
-                  }}
-                  className="h-2 rounded-full transition-all"
-                ></div>
-              </div>
-            </div>
-            <span className="text-xs font-semibold ml-2">{item.value}%</span>
+            <span className="text-xs font-medium">{item.time}</span>
+            <item.icon className="h-8 w-8 my-2 text-blue-400" />
+            <span className="text-sm font-semibold mt-1">{item.temp}</span>
           </div>
         ))}
       </div>
