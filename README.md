@@ -22,7 +22,7 @@ It shows current weather, forecast, and more for selected cities using the **Ope
 Clone the project and install dependencies:
 
 ```bash
-git clone https://github.com/your-username/surfers-weather.git
+git clone https://github.com/shwetakhatra/surfers-weather.git
 cd surfers-weather
 pnpm install
 # or
