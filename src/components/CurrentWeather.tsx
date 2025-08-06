@@ -40,7 +40,7 @@ const CurrentWeather: FC<CurrentWeatherProps> = ({
             </span>
             <div className="flex flex-col gap-1">
               <span className="text-lg font-medium">
-                {weather.current.weathercode || "Unknown"}{" "}
+                {weather.current.weathercode || ""}{" "}
                 {weather.current_weather_units?.weathercode}
               </span>
               <div className="flex gap-2">

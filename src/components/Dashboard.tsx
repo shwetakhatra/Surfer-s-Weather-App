@@ -32,7 +32,7 @@ interface DashboardProps {
 const Dashboard = ({ theme, setWeather }: DashboardProps) => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [_, setLoading] = useState(false);
   const isDark = theme === "dark";
 
   const fetchAndSetWeather = useCallback(

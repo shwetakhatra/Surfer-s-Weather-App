@@ -75,7 +75,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ theme, onSelectCity }) => {
   };
 
   return (
-    <div className={`relative rounded-md shadow p-4`}>
+    <div className={`relative rounded-md shadow p-4 ${
+        isDark ? "bg-white/10 text-white" : "bg-gray-100 text-gray-900"
+      }` }>
       <input
         type="text"
         placeholder="Search for city"
