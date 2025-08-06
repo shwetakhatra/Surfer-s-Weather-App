@@ -16,9 +16,7 @@ const summary = [
 const WeatherSummary: FC<WeatherSummaryProps> = ({ theme }) => {
   const isDark = theme === "dark";
   return (
-    <div
-      className={`rounded-lg h-full flex flex-col `}
-    >
+    <div className={`rounded-lg h-full flex flex-col `}>
       <div className="flex justify-between items-center mb-2">
         <p className="text-sm font-bold">Summary</p>
       </div>

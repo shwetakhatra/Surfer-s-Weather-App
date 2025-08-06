@@ -1,12 +1,11 @@
 import type { FC } from "react";
-import { MoonIcon, SunIcon, GlobeAltIcon } from "@heroicons/react/24/solid";
+import { GlobeAltIcon } from "@heroicons/react/24/solid";
 
 interface HeaderProps {
   theme: string;
-  toggleTheme: () => void;
 }
 
-const Header: FC<HeaderProps> = ({ theme, toggleTheme }) => {
+const Header: FC<HeaderProps> = ({ theme }) => {
   return (
     <header
       className={`w-full shadow-md z-50 ${
@@ -23,21 +22,6 @@ const Header: FC<HeaderProps> = ({ theme, toggleTheme }) => {
             Surfer’s Weather
           </h1>
         </div>
-        <button
-          onClick={toggleTheme}
-          className={`hidden p-2 rounded-md transition hover:ring-2 hover:ring-blue-300 ${
-            theme === "dark"
-              ? "bg-gray-800 text-white"
-              : "bg-gray-100 text-gray-800"
-          }`}
-          aria-label="Toggle theme"
-        >
-          {theme === "dark" ? (
-            <SunIcon className="w-6 h-6 text-yellow-400" />
-          ) : (
-            <MoonIcon className="w-6 h-6 text-gray-800" />
-          )}
-        </button>
       </div>
     </header>
   );
